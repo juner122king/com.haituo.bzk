@@ -1,0 +1,215 @@
+<import name="image-list" src="./image-list.ux"></import>
+<template>
+  <div class="page">
+
+     <text class="pagetitle">壁纸控</text>
+     <list id="list" class="tab-bar">
+      <block for="category">
+        <list-item
+          class="tab-item"
+          style="{{$idx === 0 ? 'margin-left:12px;' : ''}}"
+          type="tab"
+          onclick="clickTab($idx)"
+        >
+          <text
+            style="color:{{$idx === currentIdx ? '#333333' : 'rgba(153, 153, 153, 1)'}};"
+            >{{ $item.label }}</text
+          >
+          <div
+            class="line"
+            style="background-color:{{$idx === currentIdx ? '#5767f1' : '#ffffff'}};"
+          ></div>
+        </list-item>
+      </block>
+    </list>
+    <tabs onchange="changeCurrent" index="{{currentIdx}}">
+      <tab-content>
+        <block for="category">
+          <image-list
+            loading="{{$idx === currentIdx}}"
+            category="{{$item}}"
+          ></image-list>
+        </block>
+      </tab-content>
+    </tabs> 
+
+    <div class="home-tisp" show="{{ishowTisp}}">
+      <div class="content">
+        <div class="title"><text class="txt">用户协议隐私政策提醒</text></div>
+        <div class="details">
+          <text class="txt">
+            感谢您使用天天好觉请您在使用(或继续使用)我们的产品服务前仔细阅读
+            <a
+              href="https://www.ihaituo.cn/xy/tthj/yhxy.html"
+              class="active-txt"
+              >《用户协议》</a
+            >
+            和
+            <a
+              href="https://www.ihaituo.cn/xy/tthj/yszc.html"
+              class="active-txt"
+              >《隐私政策》</a
+            >
+            我们将全力保障您的合法权益与信息安全，并将持续为您提供优质服务。
+          </text>
+        </div>
+        <div class="subimt" @click="showTisp">
+          <text class="txt">同意</text>
+        </div>
+        <div class="close" @click="closeTisp">
+          <text class="txt">拒绝并退出</text>
+        </div>
+      </div>
+    </div>  
+  </div>
+</template>
+
+<script>
+import { category } from '../../helper/category.js'
+export default {
+  data: {
+    isaddDesktop: false,
+    category: category,//分类
+    currentIdx: 0,
+    list: [
+
+    ],
+
+  },
+  props: {
+    ishowTisp: {
+      type: Boolean,
+      default: false
+    }
+  },
+
+  changeCurrent(e) {
+    this.currentIdx = e.index
+    this.$element('list').scrollTo({
+      index: this.currentIdx - 2 > 0 ? this.currentIdx - 2 : 0
+    })
+  },
+
+  clickTab(idx) {
+    this.currentIdx = idx
+  },
+
+
+  onReady() {
+
+    $apis.example.sense().then((res) => {
+      console.log(res, '获取data')
+      this.list = res.data
+    })
+  },
+
+  onInit() {
+    $shortcut.hasInstalled({
+      success: function (ret) {
+        console.log('hasInstalled success ret---' + ret);
+        this.isaddDesktop = ret
+      }.bind(this),
+      fail: function (erromsg, errocode) {
+        console.log('hasInstalled fail ret---' + erromsg);
+      }.bind(this),
+      complete: function () {
+      }
+    })
+  },
+
+  showTisp: function (params) {
+    const that = this;
+    this.$emit('emitEvt')
+    $storage.set({
+      key: 'consentPrivacy',
+      value: '1',
+      success: function (data) {
+        console.log("handling success");
+      },
+      fail: function (data, code) {
+        console.log("handling fail, code=" + code);
+      }
+    })
+  },
+  closeTisp: function (params) {
+    this.$app.exit()
+  },
+
+}
+</script>
+
+<style lang="less">
+@import './index.less';
+.home-tisp {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 32px;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  .content {
+    padding: 0 30px;
+    width: 100%;
+    margin: 200px auto;
+    background-color: #ffffff;
+    border-radius: 12px;
+    flex-direction: column;
+    height: 488px;
+    top: 300px;
+    .title {
+      justify-content: center;
+      align-items: center;
+      margin-top: 25px;
+      margin-bottom: 25px;
+      .txt {
+        font-size: 32px;
+        font-weight: 600;
+        color: #000000;
+      }
+    }
+    .subimt {
+      height: 88px;
+      background-color: #3784f9;
+      border-radius: 16px;
+      justify-content: center;
+      align-items: center;
+      margin-top: 50px;
+      .txt {
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 32px;
+      }
+    }
+
+    .close {
+      height: 88px;
+      justify-content: center;
+      align-items: center;
+      .txt {
+        color: #c5c5c5;
+        font-weight: 600;
+        font-size: 32px;
+      }
+    }
+  }
+
+  .details {
+    flex-wrap: wrap;
+    padding: 0 20px;
+    .txt,
+    .active-txt {
+      font-weight: 400;
+
+      color: #000000;
+      font-size: 26px;
+    }
+
+    .active-txt {
+      font-weight: 400;
+      color: #3784f9;
+      font-size: 26px;
+    }
+  }
+}
+</style>

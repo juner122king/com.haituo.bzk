@@ -1,0 +1,64 @@
+<template>
+  <div class="page">
+    <text class="page_title">{{title}}</text>
+      <list  class="list" style="margin-bottom:{{marginbottom}}px;">
+        <list-item  type="h-list"  for="{{datas}}" >
+        <div class="item" onclick="toDetail($item)">
+        
+         <text class="t1">{{$item.title}}</text>
+         <text class="t3">{{$item.remark}}</text>
+         <text class="t2">{{$item.content}}</text>
+           </div>
+        </list-item>
+      </list>
+  </div>
+</template>
+
+<script>
+export default {
+
+  data: {
+    type: 'idioms',//	idioms:成语, poetry:诗词, 必填
+    title: '成语故事',
+    datas: [
+    ],//文章列表 
+    marginbottom: 100//page底部缩进
+
+  },
+  onInit() {
+    this.getDatas()
+  },
+
+  getDatas: function () {
+
+
+    $apis.example.list(this.type).then((res) => {
+      console.log(res, '文章列表')
+      this.datas = res.data
+      // console.log(this.datas, ':datas')
+    })
+  },
+  //打开详情
+  toDetail(data) {
+
+    console.log(data, '点击内容')
+
+    if (this.type !== 'idioms') {
+      //诗词不能点击
+      return
+    }
+
+
+    $router.push({
+      uri: 'pages/weather/detail',
+      params: {        title: data.title,
+        content: data.content
+      }
+    })
+  }
+}
+</script>
+
+<style lang="less">
+@import './index.less';
+</style>

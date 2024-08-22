@@ -1,0 +1,41 @@
+<template>
+  <div class="page">
+  
+      <!-- <div class="page_title" onclick="back">
+      <image style="  width: 40px;height: 40px;" src="../img/back.png"></image>
+        <text class="text">{{detail.subTitle}}</text>
+    </div> -->
+ 
+    <div class="div">
+          <text class="title">{{title}}</text>
+        <text class="content">{{content}}
+        </text>
+      
+    </div>
+     
+  </div>
+</template>
+
+<script>
+export default {
+  data: {
+    title:'',
+    content:'',
+    detail: {
+      // title:'井底之蛙',
+      // content:'这个成语出自《庄子·秋水》。故事讲述了一只住在井里的青蛙，它从未见过外面的世界，以为天就是井口那么大。有一天，一只海龟来到了井边，告诉青蛙外面的世界有多么广阔，天空和海洋无边无际。青蛙不相信，认为海龟在夸大其词。海龟试图让青蛙跳出井来亲眼看看，但青蛙害怕跳不出去，始终不肯出来。这个故事告诉我们，人们的认知受到经验和环境的限制，只有拓宽视野，才能获得更广阔的认识。成语"并底之蛙" 因此被用来形容那些见识短浅、不知天高地厚的人。'
+    
+    },
+  },
+  onInit() {
+
+  },
+  back() {
+    $router.back()
+  },
+}
+</script>
+
+<style lang="less">
+@import './index.less';
+</style>
