@@ -98,16 +98,26 @@ export default {
   },
 
   clickImg(idx) {
-    media.previewImage({
-      current: idx,
-      uris: this.imageList,
-      success: function () {
-        console.log('preview success')
-      },
-      fail: function (data, code) {
-        console.log('preview fail, code = ${code}')
+    // media.previewImage({
+    //   current: idx,
+    //   uris: this.imageList,
+    //   success: function () {
+    //     console.log('preview success')
+    //   },
+    //   fail: function (data, code) {
+    //     console.log('preview fail, code = ${code}')
+    //   }
+    // })
+  console.log('图片列表', this.imageList)
+    $router.push({
+      uri: "pages/gallery",
+      params: {
+        title: this.category.label,
+        imageListString: this.imageList
       }
     })
+
+
   },
 
   loadFail(item, idx) {

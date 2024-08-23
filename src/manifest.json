@@ -121,7 +121,11 @@
       },
       "pages/weather/detail": {
         "component": "index"
+      },
+      "pages/gallery": {
+        "component": "index"
       }
+ 
     }
   },
   "display": {
@@ -198,6 +202,9 @@
         "menu": false,
         "statusBarImmersive": true,
         "statusBarBackgroundOpacity": 0
+      },
+      "pages/gallery": {
+        "titleBarText": ""
       }
     }
   }
