@@ -249,7 +249,7 @@ export default {
   width: 100%;
   height: 100%;
   columns: 3;
-  padding: 4px 6px 52px;
+  padding: 4px 6px 160px;
   .list-item {
     margin: 4px 8px 12px;
   }

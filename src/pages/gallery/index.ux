@@ -79,7 +79,9 @@ export default {
       success: function (res) {
         console.log("Download success.resp = " + JSON.stringify(res))
           $prompt.showToast({
-            message: `下载成功！${res.filePath}`
+            message: `下载成功`,
+            gravity: 'center'
+            
           })
           
       },
