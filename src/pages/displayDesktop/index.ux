@@ -1,5 +1,6 @@
 <import name="testing" src="../testing/index.ux"></import>
 <import name="user" src="../user/index.ux"></import>
+<import name="weather" src="../weather/index.ux"></import>
 <template>
   <div class="container">
     <tabs index="{{selectedTab}}" onchange="changeTabactive">
@@ -11,13 +12,14 @@
           onemit-evt="showTisp"
         >
         </testing>
-        <user index="1" current-index="{{exhibitionIndex}}"></user>
+          <weather index="1" current-index="{{exhibitionIndex}}"></weather>
+        <user index="2" current-index="{{exhibitionIndex}}"></user>
       </tab-content>
 
       <tab-bar class="tab_bar">
         <block for="datas.list">
           <div class="tab_item">
-            <image src="{{$item.show?$item.pic_choice:$item.pic}}" />
+            <image src="{{$item.show?$item.pic_choice:$item.pic}}" ></image>
             <text style="color: {{$item.color}}">{{ $item.title }}</text>
           </div>
         </block>
@@ -100,6 +102,17 @@ export default {
       {
         id: 1,
         color: '#878787',
+        pic: 'https://cdn.ihaituo.cn/qa/app/bzk/likea.png',
+        pic_choice: 'https://cdn.ihaituo.cn/qa/app/bzk/like.png',
+        show: false,
+        title: '喜欢',
+        pagePath: '/pages/weather',
+        path: 'pages/weather',
+      },
+
+      {
+        id: 2,
+        color: '#878787',
         pic: 'https://cdn.ihaituo.cn/qa/app/bzk/mya.png',
         pic_choice: 'https://cdn.ihaituo.cn/qa/app/bzk/my.png',
         show: false,
@@ -171,7 +184,7 @@ export default {
     if (!this.$app.$def.globalData.isShwoAd) {
       this.show = false
       const that = this;
-      this.exhibitionIndex = 5;
+      this.exhibitionIndex = 3;
       setTimeout(() => {
         that.exhibitionIndex = that.selectedTab
       })

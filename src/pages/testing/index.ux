@@ -13,7 +13,7 @@
         >
           <text
             style="color:{{$idx === currentIdx ? '#333333' : 'rgba(153, 153, 153, 1)'}};"
-            >{{ $item.label }}</text
+            >{{ $item.codeName }}</text
           >
           <div
             class="line"
@@ -65,16 +65,12 @@
 </template>
 
 <script>
-import { category } from '../../helper/category.js'
+// import { category } from '../../helper/category.js'
 export default {
   data: {
     isaddDesktop: false,
-    category: category,//分类
+    category: '',//分类
     currentIdx: 0,
-    list: [
-
-    ],
-
   },
   props: {
     ishowTisp: {
@@ -97,9 +93,11 @@ export default {
 
   onReady() {
 
-    $apis.example.sense().then((res) => {
-      console.log(res, '获取data')
-      this.list = res.data
+
+    $apis.example.typeList().then((res) => {
+      console.log(res, '壁纸分类列表')
+
+      this.category = res.data
     })
   },
 

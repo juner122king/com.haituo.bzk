@@ -1,15 +1,15 @@
 <template>
   <div class="container">
-    <div class="swiper-container">
-      <swiper class="swiper" indicator="true" autoplay="false" loop="false" previousmargin="60px" nextmargin="60px">
+    <div class="swiper-container"> 
+      <swiper id="swiper" class="swiper" onchange="change" indicator="true" autoplay="false" loop="false" previousmargin="60px" nextmargin="60px">
         <div for="{{imageList}}" class="gallery-item">
-           <image  class="item" src="{{$item}}"></image>
+           <image  class="item" src="{{$item.picture}}"></image>
            <div class="icons">
-               <image class="icon" src="https://cdn.ihaituo.cn/qa/app/bzk/imglike.png"></image>
+               <image class="icon" src="https://cdn.ihaituo.cn/qa/app/bzk/{{isLike?'imgunlike':'imglike'}}.png" onclick="getLike($idx)"></image>
                <text class="text">喜欢</text>
-               <image class="icon" src="https://cdn.ihaituo.cn/qa/app/bzk/share.png"></image>
-               <text class="text">分享</text>
-               <image class="icon" src="https://cdn.ihaituo.cn/qa/app/bzk/down.png"></image>
+               <image  if="false" class="icon" src="https://cdn.ihaituo.cn/qa/app/bzk/share.png" onclick="getShare($idx)"></image>
+               <text   if="false"  class="text">分享</text>
+               <image class="icon" src="https://cdn.ihaituo.cn/qa/app/bzk/down.png" onclick="getDown($idx)"></image>
                <text class="text">下载</text>
            </div>
         </div> 
@@ -17,6 +17,85 @@
     </div>
   </div>
 </template>
+
+
+<script>
+import downloadtask from '@system.downloadtask'
+export default {
+  data: {
+    title: '',
+    imageList: [],
+    imageListString: '',
+    index: 0,//从上层列表每几项点击进来的
+    isLike: false
+  },
+  onInit() {
+    this.$page.setTitleBar({ text: this.title })
+    console.log('过来了图片列表imageListString', this.imageListString)
+    this.imageList = JSON.parse(this.imageListString)
+  },
+  change: function (e) {
+    $apis.example.isLike(this.imageList[e.index].bzId).then((res) => {
+      this.isLike = res.data
+    })
+  },
+  getLike(e) {
+    // $prompt.showToast({
+    //   message: `第 ${e} 页`
+    // })
+    let bzid = this.imageList[e].bzId
+    let bzLikeId = this.imageList[e].bzLikeId
+
+    if (this.isLike) {//当前选中的是否已喜欢
+      $apis.example.unLike(bzLikeId).then((res) => {
+        if (res.data) {//取消喜欢
+          this.isLike = false
+          $prompt.showToast({
+            message: `取消喜欢`
+          })
+        }
+      })
+    } else {
+      $apis.example.getLike(bzid).then((res) => {
+        if (res.data) {//喜欢
+          this.isLike = true
+          $prompt.showToast({
+            message: `喜欢`
+          })
+        }
+      })
+    }
+  },
+  getShare(e) {
+    $prompt.showToast({
+      message: `第 ${e} 页`
+    })
+  },
+  getDown(e) {
+
+    let url = this.imageList[e].picture
+    const retDownloadTask = downloadtask.downloadFile({
+      url: url,
+      success: function (res) {
+        console.log("Download success.resp = " + JSON.stringify(res))
+          $prompt.showToast({
+            message: `下载成功！${res.filePath}`
+          })
+          
+      },
+      fail: function (data, code) {
+        console.log(`handling fail, errMsg = ${data}`)
+        console.log(`handling fail, errCode = ${code}`)
+           $prompt.showToast({
+            message: `下载失败！`
+          })
+      }
+    })
+
+  }
+
+}
+</script>
 
 <style>
   .container{
@@ -60,21 +139,5 @@
     line-height: 44px;
   }
 
+
 </style>
-
-<script>
-export default {
-  data: {
-    title: '',
-    imageList: [],
-    imageListString: ''
-  },
-  onInit() {
-    this.$page.setTitleBar({ text: this.title, textColor: '#333333', backgroundColor: '#FFFFFF', backgroundOpacity: 0.5, menu: false })
-
-    console.log('过来了图片列表imageListString', this.imageListString)
-    this.imageList = JSON.parse(this.imageListString)
-  },
-
-}
-</script>

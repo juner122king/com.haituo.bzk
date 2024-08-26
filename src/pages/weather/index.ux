@@ -1,64 +1,269 @@
+<import name="dialog-box" src="../../components/dialogBox"></import>
 <template>
-  <div class="page">
-    <text class="page_title">{{title}}</text>
-      <list  class="list" style="margin-bottom:{{marginbottom}}px;">
-        <list-item  type="h-list"  for="{{datas}}" >
-        <div class="item" onclick="toDetail($item)">
-        
-         <text class="t1">{{$item.title}}</text>
-         <text class="t3">{{$item.remark}}</text>
-         <text class="t2">{{$item.content}}</text>
-           </div>
-        </list-item>
-      </list>
+ <div class="page">
+
+    <text class="action" onclick="action">{{isShowDel?'完成':'编辑'}}</text>
+    <text class="pagetitle">喜欢的壁纸</text>
+
+  <refresh
+    offset="100px"
+    refreshing="{{isRefeshing}}"
+    onrefresh="doRefresh"
+    type="pulldown">
+    <div class="no-result" if="{{imageList.length === 0}}">
+      <image src="./img/no-result.png"></image>
+    </div>
+    <list class="img-list" onscrollbottom="bottom" else>
+      <list-item
+        class="list-item"
+        type="image"
+        for="{{imageList}}"
+        onclick="clickImg($idx)">
+        <image
+          src="{{$item.picture}}"
+          onerror="loadFail($item,$idx)"
+        ></image>
+        <image show="{{isShowDel}}" class="del" src="https://cdn.ihaituo.cn/qa/app/bzk/del2.png"></image>
+      </list-item>
+    </list>
+  </refresh>
+    <dialog-box
+      show-dialog="{{isShowDelDialog}}"
+      dialog-data="{{dialogData}}"
+      onemit-success="openDialog"
+      onemit-clone="cloneDialog"
+    ></dialog-box>
+  
+
   </div>
 </template>
 
 <script>
 export default {
 
-  data: {
-    type: 'idioms',//	idioms:成语, poetry:诗词, 必填
-    title: '成语故事',
-    datas: [
-    ],//文章列表 
-    marginbottom: 100//page底部缩进
-
+  data() {
+    return {
+      imageList: [],
+      count: 10,
+      isRefeshing: false,//是否刷新中
+      isShowDel: false,//是否显示图片删除按钮
+      isShowDelDialog: false,//是否显示提示删除Dialog
+      dialogData: '',
+      nowidx: -1,//当前选中的索引
+    }
   },
+  props: {
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    currentIndex: {
+      type: Number,
+      default: 0
+    }
+  },
+
   onInit() {
-    this.getDatas()
+    this.$watch('currentIndex', 'watchPropsChange')//监听tab游标
+    this.$watch('loading', 'watchLoading')
+    this.refreshList()
+    this.dialogData = {
+      hading: "提示",
+      subheading: "您确定要删除该壁纸吗？",
+      iconType: "hint",
+      cloneBtn: "取消",
+      successBtn: "确定删除"
+    }
+  },
+  /**
+       * 监听数据变化，你可以对数据处理后，设置值到data上
+       */
+  watchPropsChange(newV, oldV) {
+    console.log(`监听数据变化：`, newV, oldV)
+    if (newV === 1 && (oldV === 0 || oldV === 2)) {//点击到天气页
+      //请求地理权限
+      this.refreshList()
+    }
+
+  },
+  watchLoading(newV, oldV) {
+    if (newV && !this.imageList.length) {
+      this.refreshList()
+    }
   },
 
-  getDatas: function () {
+  bottom() {
+    this.refreshList()
+  },
 
+  doRefresh() {
+    this.isRefeshing = true
+    this.imageList = []
+    this.refreshList()
+    setTimeout(() => {
+      this.isRefeshing = false
+    }, 2000)
+  },
 
-    $apis.example.list(this.type).then((res) => {
-      console.log(res, '文章列表')
-      this.datas = res.data
-      // console.log(this.datas, ':datas')
+  refreshList: function () {
+    $apis.example.likeList().then((res) => {
+      console.log(res, '喜欢列表')
+      this.imageList = res.data
     })
   },
-  //打开详情
-  toDetail(data) {
 
-    console.log(data, '点击内容')
+  clickImg(idx) {
+    console.log('图片列表', this.imageList)
+    this.nowidx = idx
+    if (this.isShowDel) {//当前操作模式，删除与点击
+      this.isShowDelDialog = true
+    } else {
 
-    if (this.type !== 'idioms') {
-      //诗词不能点击
-      return
+      $router.push({
+        uri: "pages/gallery",
+        params: {
+          title: "喜欢的壁纸",
+          imageListString: this.imageList,
+          index: idx
+        }
+      })
     }
 
 
-    $router.push({
-      uri: 'pages/weather/detail',
-      params: {        title: data.title,
-        content: data.content
+  },
+  cloneDialog() {
+    this.isShowDelDialog = false
+  },
+  openDialog() {//确认删除图片
+    this.isShowDelDialog = false
+    let bzLikeId = this.imageList[this.nowidx].bzLikeId
+    $apis.example.unLike(bzLikeId).then((res) => {
+      if (res.data) {//取消喜欢
+        this.refreshList()
       }
     })
+  },
+  action() {
+    let thta = this
+    this.isShowDel = !thta.isShowDel
   }
 }
 </script>
 
 <style lang="less">
-@import './index.less';
+@import '../../assets/styles/style.less';
+
+.page {
+
+    background-repeat: no-repeat;
+    background-color: #ffffff;
+    background-size: cover;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    height: 100%;
+}
+
+    .pagetitle {
+        font-size: 40px;
+        font-weight: bold;
+        color: #333333;
+        line-height: 44px;
+        margin-top: 100px;
+    }
+       .action {
+        font-size: 36px;
+        font-weight: bold;
+        color: #999999;
+        line-height: 44px;
+        position: absolute;
+        top: 100px;
+        left: 30px;
+
+    }
+.no-result {
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  image {
+    width: 80px;
+    height: 80px;
+    margin-top: 200px;
+    margin-bottom: 15px;
+  }
+}
+
+.big-img-wrap {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  .mask {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+  .big-img {
+    object-fit: contain;
+  }
+  .nav {
+    position: absolute;
+    align-self: center;
+    width: 40px;
+    height: 80px;
+    background-color: rgba(255, 255, 255, 0.5);
+    flex-direction: column;
+    justify-content: center;
+     align-items: center;
+    image {
+      width: 25px;
+    }
+  }
+  .download {
+    width: 30px;
+    position: absolute;
+    top: 30px;
+    right: 30px;
+  }
+}
+.no-result {
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  image {
+    width: 180px;
+    height: 180px;
+    margin-top: 200px;
+    margin-bottom: 15px;
+  }
+}
+
+.img-list {
+  margin-top: 50px;
+  width: 100%;
+  height: 100%;
+  columns: 3;
+  padding: 4px 6px 52px;
+  .list-item {
+    margin: 4px 8px 12px;
+  }
+  image {
+    width: 100%;
+    height: 280px;
+    border-radius: 20px;
+  }
+  .del{
+    position: absolute;
+    right: 10px;
+    top: 16px;
+    width: 36px;
+height: 36px;
+  }
+}
 </style>

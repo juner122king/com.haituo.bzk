@@ -17,8 +17,7 @@ const userPhoneLogout = (data) => {
   })
 }
 
-///以下是壁纸控接口
-//随机获取成语,谚语
+
 const sense = () => {
   return request({
     method: 'GET',
@@ -26,13 +25,8 @@ const sense = () => {
   })
 }
 
-//诗词,成语 列表
-const list = (type) => {
-  return request({
-    method: 'GET',
-    url: `/qa/mini/bzk/${type}/list`,
-  })
-}
+
+
 //获取广告完成次数
 const getAdCount = (data) => {
   return request({
@@ -114,11 +108,65 @@ const capture = (data) => {
 }
 
 
+//壁纸 列表
+const list = (data) => {
+  return request({
+    method: 'GET',
+    url: `/qa/mini/bzk/list`,
+    data
+  })
+}
+//壁纸 分类列表
+const typeList = () => {
+  return request({
+    method: 'GET',
+    url: `/qa/mini/bzk/type/list`,
+  })
+}
+//是否已添加喜欢列表
+const isLike = (bzId) => {
+  return request({
+    method: 'GET',
+    url: `/qa/mini/bzk/isLike/${bzId}`,
+  })
+}
+
+//添加喜欢
+const getLike = (bzId) => {
+  return request({
+    method: 'PUT',
+    url: `/qa/mini/bzk/like/${bzId}`,
+  })
+}
+
+//取消喜欢
+const unLike = (bzLikeId) => {
+  return request({
+    method: 'DELETE',
+    url: `/qa/mini/bzk/like/${bzLikeId}`,
+  })
+}
+
+//喜欢列表
+const likeList = () => {
+  return request({
+    method: 'GET',
+    url: `/qa/mini/bzk/like/list`,
+  })
+}
+
+
+
 export default {
   toLogin,
   userPhoneLogout,
   sense,
   list,
+  typeList,
+  isLike,
+  getLike,
+  likeList,
+  unLike,
   getAdCount,
   completeAdRSA,
   convertUpload,

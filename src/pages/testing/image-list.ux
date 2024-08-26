@@ -1,6 +1,6 @@
 <template>
   <refresh
-    offset="50px"
+    offset="100px"
     refreshing="{{isRefeshing}}"
     onrefresh="doRefresh"
     type="pulldown"
@@ -16,7 +16,7 @@
         onclick="clickImg($idx)"
       >
         <image
-          src="{{$item}}"
+          src="{{$item.picture}}"
           onerror="loadFail($item,$idx)"
         ></image>
       </list-item>
@@ -27,7 +27,7 @@
 <script>
 import prompt from '@system.prompt'
 import media from '@system.media'
-import { fetchImageList, doFetch, getImageList } from '../../helper/data.js'
+// import { fetchImageList, doFetch, getImageList } from '../../helper/data.js'
 
 export default {
   data() {
@@ -60,28 +60,12 @@ export default {
   },
 
   refreshList() {
-    doFetch(fetchImageList(this.category.value, this.count), 5000)
-      .then(res => {
-        for (let img of res) {
-          this.imageList.push(img.urls.small)
-        }
-      })
-      .catch(async err => {
-        console.log('handle fail', err)
-        if (err === '请求超时') {
-          prompt.showToast({
-            message: '请求超时啦~'
-          })
-        }
-        const list = await getImageList()
-        if (list.length) {
-          for (let img of list) {
-            this.imageList.push(img.urls.small)
-          }
-        } else {
-          console.log('缓存数据为空')
-        }
-      })
+
+    $apis.example.list({ type: this.category.codeValue }).then((res) => {
+      console.log(res, '壁纸列表')
+      this.imageList = res.data
+    })
+
   },
 
   bottom() {
@@ -98,26 +82,15 @@ export default {
   },
 
   clickImg(idx) {
-    // media.previewImage({
-    //   current: idx,
-    //   uris: this.imageList,
-    //   success: function () {
-    //     console.log('preview success')
-    //   },
-    //   fail: function (data, code) {
-    //     console.log('preview fail, code = ${code}')
-    //   }
-    // })
-  console.log('图片列表', this.imageList)
+    console.log('图片列表', this.imageList)
     $router.push({
       uri: "pages/gallery",
       params: {
-        title: this.category.label,
-        imageListString: this.imageList
+        title: this.category.codeName,
+        imageListString: this.imageList,
+        index: idx
       }
     })
-
-
   },
 
   loadFail(item, idx) {
@@ -138,8 +111,8 @@ export default {
   justify-content: flex-start;
   align-items: center;
   image {
-    width: 80px;
-    height: 80px;
+    width: 180px;
+    height: 180px;
     margin-top: 200px;
     margin-bottom: 15px;
   }
