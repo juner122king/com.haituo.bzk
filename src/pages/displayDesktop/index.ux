@@ -180,7 +180,6 @@ export default {
     }
   },
   onShow: function () {
-    $umeng_stat.resume(this) //在onShow方法的第一行加入此代码
     if (!this.$app.$def.globalData.isShwoAd) {
       this.show = false
       const that = this;
@@ -193,7 +192,6 @@ export default {
 
   }, onHide: function () {
     console.log();
-    $umeng_stat.pause(this);//在onHide方法的第一行加入此代码
     //App业务代码
   },
   changeTabactive: function (e) {
