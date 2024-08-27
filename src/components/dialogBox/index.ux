@@ -9,7 +9,7 @@
           <text class="txt">{{ dialogData.subheading }}</text>
         </div>
         <div class="btnList">
-          <div class="close-btn" @click="closeBtn">
+          <div if="{{dialogData.showCloseBtn}}" class="close-btn" @click="closeBtn">
             <text class="txt">{{ dialogData.cloneBtn }}</text>
           </div>
           <div
@@ -41,6 +41,10 @@ export default {
     showDialog: {
       type: Boolean,
       default: false
+    },
+    showCloseBtn: {//是否显示取消按钮
+      type: Boolean,
+      default: true
     },
     dialogData: {
       type: Object,

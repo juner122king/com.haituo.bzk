@@ -1,3 +1,4 @@
+<import name="dialog-box" src="../../components/dialogBox"></import>
 <template>
   <div class="container">
     <div class="swiper-container"> 
@@ -15,86 +16,148 @@
         </div> 
       </swiper>
     </div>
+        <dialog-box
+      show-dialog="{{isShowDialog}}"
+      show-closeBtn="false"
+      dialog-data="{{dialogData}}"
+      onemit-success="openDialog"
+      onemit-clone="cloneDialog"
+    ></dialog-box>
+  
   </div>
 </template>
-
-
 <script>
 import downloadtask from '@system.downloadtask'
+import media from '@system.media'
 export default {
   data: {
     title: '',
     imageList: [],
     imageListString: '',
     index: 0,//从上层列表每几项点击进来的
-    isLike: false
+    bzLikeId: '',//当前图片对于用户的喜欢id ,不喜欢则为空
+    isLike: false,
+    isShowDialog: false,//是否显示提示删除Dialog
+    selectIdx: 0//当前选中下载项
   },
+
   onInit() {
     this.$page.setTitleBar({ text: this.title })
     console.log('过来了图片列表imageListString', this.imageListString)
     this.imageList = JSON.parse(this.imageListString)
+
+    this.dialogData = {
+      hading: "温馨提示",
+      subheading: "即将使用存储，用于存储图片或视频",
+      iconType: "hint",
+      cloneBtn: "",
+      successBtn: "我知道了"
+    }
   },
   change: function (e) {
     $apis.example.isLike(this.imageList[e.index].bzId).then((res) => {
-      this.isLike = res.data
+      //有数据则表示已喜欢
+      this.bzLikeId = res.data
+      this.isLike = res.data ? true : false
     })
   },
   getLike(e) {
-    // $prompt.showToast({
-    //   message: `第 ${e} 页`
-    // })
     let bzid = this.imageList[e].bzId
-    let bzLikeId = this.imageList[e].bzLikeId
+    let bzLikeId = this.bzLikeId//获取最新 喜欢ID
+    console.log("bzid:", bzid)
+    console.log("bzLikeId:", bzLikeId)
 
     if (this.isLike) {//当前选中的是否已喜欢
       $apis.example.unLike(bzLikeId).then((res) => {
+        console.log("取消喜欢接口：", res)
         if (res.data) {//取消喜欢
           this.isLike = false
           $prompt.showToast({
-            message: `取消喜欢`
+            message: `取消喜欢`,
+            gravity: 'center'
           })
         }
       })
     } else {
       $apis.example.getLike(bzid).then((res) => {
         if (res.data) {//喜欢
+          this.bzLikeId = res.data//刷新旧的喜欢ID
           this.isLike = true
           $prompt.showToast({
-            message: `喜欢`
+            message: `喜欢`,
+            gravity: 'center'
           })
         }
       })
     }
   },
+
   getShare(e) {
     $prompt.showToast({
       message: `第 ${e} 页`
     })
   },
   getDown(e) {
-
-    let url = this.imageList[e].picture
-    const retDownloadTask = downloadtask.downloadFile({
-      url: url,
-      success: function (res) {
-        console.log("Download success.resp = " + JSON.stringify(res))
-          $prompt.showToast({
-            message: `下载成功`,
-            gravity: 'center'
-            
-          })
-          
-      },
-      fail: function (data, code) {
-        console.log(`handling fail, errMsg = ${data}`)
-        console.log(`handling fail, errCode = ${code}`)
-           $prompt.showToast({
-            message: `下载失败！`
-          })
+    let that = this
+    this.selectIdx = e
+    $storage.get({
+      key: 'picSave',
+      success: function (data) {
+        console.log('有1了picSave：', data);
+        if (data === '1') {   //第一次点击下载先提示
+          that.onDown()//直接下载
+        } else {
+          that.isShowDialog = true//显示温馨提示
+        }
       }
     })
+  },
+  onDown() {
+    let url = this.imageList[this.selectIdx].picture
+    const retDownloadTask = downloadtask.downloadFile({
+      url: url,
+      // filePath: filePath,
+      success: function (res) {
+        console.log("Download success.resp = " + JSON.stringify(res))
+        const imagePath = res.filePath
+        if (imagePath && imagePath.length > 0) {
+          media.saveToPhotosAlbum({
+            uri: imagePath,
+            // folderName: 'custom-folder',
+            success: function () {
+              console.log(`已保存图片于自定义目录`)
+              $prompt.showToast({
+                message: `下载成功`,
+                gravity: 'center'
+              })
+            },
+            fail: function (data, code) {
+              console.log(`保存图片失败, 错误码：${code}`)
+            }
+          })
+        }
 
-  }
+      },
+      fail: function (data, code) {
+        $prompt.showToast({
+          message: `下载失败！`
+        })
+      }
+    })
+  },
+  openDialog() {//确认温馨提示
+    this.isShowDialog = false
+    let that = this
+    $storage.set({
+      key: 'picSave',
+      value: '1',
+      success: function (data) {
+        console.log("gallerySave success")
+        that.onDown()
+      }
+    })
+  },
+
 
 }
 </script>
@@ -129,6 +192,7 @@ export default {
     bottom: 150px;
     flex-direction: column;
     align-items: center;
+    background-color: rgba(0, 0, 0, 0);
   }
   .icon{
     width: 80px;

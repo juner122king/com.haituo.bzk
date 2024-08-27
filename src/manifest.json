@@ -48,6 +48,9 @@
     },
     {
       "name": "system.image"
+    },
+    {
+      "name": "system.media"
     }
   ],
   "permissions": [
@@ -122,7 +125,6 @@
       "pages/gallery": {
         "component": "index"
       }
- 
     }
   },
   "display": {

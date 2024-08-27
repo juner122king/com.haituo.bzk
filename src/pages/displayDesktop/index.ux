@@ -150,7 +150,6 @@ export default {
         try {
           $utils.changeGlobalParam(that, 'brand', res.brand)//设备信息
           $apis.task.getClickControlReyurn({ brand: res.brand }).then((res) => {
-            console.log(res, '获取手势返回配置信息');
             $utils.changeGlobalParam(that, 'returnResponse', res.data)
           })
         } catch (e) {

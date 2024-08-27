@@ -92,7 +92,6 @@ export default {
     const that = this
     this.appInfo = app.getInfo()
     this.getAdPageEntrance()
-    console.log(this.appInfo, 'this.appInfo');
     // 监听属性变化
     this.$watch('currentIndex', 'watchCurrentIndex')
     device.getInfo({
@@ -121,11 +120,9 @@ export default {
   onShow() {
     //App业务代码
     console.log('是否触发onshow');
-    // $utils.showToast('你好')
     this.showToleftIcon = true;
     try {
       $apis.task.getClickControlReyurn({ brand: this.brand }).then((res) => {
-        console.log(res, '获取手势返回配置信息');
         $utils.changeGlobalParam(this, 'returnResponse', res.data)
       })
     } catch (e) {
