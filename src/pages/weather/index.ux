@@ -80,9 +80,8 @@ export default {
        */
   watchPropsChange(newV, oldV) {
     console.log(`监听数据变化：`, newV, oldV)
-    if (newV === 1 && (oldV === 0 || oldV === 2)) {//点击到天气页
-      //请求地理权限
-      this.refreshList()
+    if (newV === 1) {//点击到天气页
+      this.refreshList()//刷新数据
     }
 
   },
@@ -118,7 +117,6 @@ export default {
     if (this.isShowDel) {//当前操作模式，删除与点击
       this.isShowDelDialog = true
     } else {
-
       $router.push({
         uri: "pages/gallery",
         params: {
