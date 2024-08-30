@@ -83,7 +83,6 @@ export default {
     if (newV === 1) {//点击到天气页
       this.refreshList()//刷新数据
     }
-
   },
   watchLoading(newV, oldV) {
     if (newV && !this.imageList.length) {
