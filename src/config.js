@@ -1,18 +1,18 @@
 const adCodeData = {
   vivo: {
     appid: 111256983,
-
-    lotteryPageNativeAd: '2c7b992aa9464e86a69b213d8082798d',//场景-转盘弹出层
-    nativeAd: 'e75ed6c8b54943ed8af05d1611c75f61', //原生//记账小管家-原生-在用-开红包
-    stimulateAd: 'b5223a83ef4443b087580b81de4f4375',//幸运大转盘-激励视频
-    tableScreen:'0213f0e9f1ef4d5083c2cbf3daf76cea',//插屏广告
-    fiction1: '87befbe313b04195959f6b873ca23df8', //原生小说广告页id
-    fiction2: '6c0ff227715a4e3991653be3fddbf09a', //原生小说广告页id
-    fiction3: '2e0ca5229f2042baab8d9fc1f84ef007', //原生小说广告页id
-    fiction4: 'eff21e44e084cd3a5a4b16d09cc8db6', //原生小说广告页id
-    fiction5: 'ae234c1e5b764f0c88d7dfbfedbc9487', //原生512 2.0自渲染512x512
-    banner: '123',//1080*171
-    nativeAd_cfd:'a7d784a6dff644ff85037298e1e85c8c',//拆福袋原生//2.0自渲染1280x720
+    lotteryPageNativeAd: '05329f2c43684548a68c4425b88be29c',//场景-转盘弹出层
+    nativeAd: 'bc85d9c9011841aeb2dd8039c15a3883', //原生//记账小管家-原生-在用-开红包
+    stimulateAd: '0e0c2a0699a242acaee36edbde4ef4ca',//幸运大转盘-激励视频
+  
+    fiction1: 'b2669f5b56814a4bbed818b8b72a766c', //原生小说广告页id
+    fiction2: 'd4e89b1c51654a8498d3a95d28658ecf', //原生小说广告页id
+    fiction3: '6e63fc9a2fb64ce3b9762fa0f52b51f4', //原生小说广告页id
+    fiction4: '79663c38d0664697b749df18a40c676f', //原生小说广告页id
+    fiction5: '736007fe204b425b990b1833008845c5', //原生512 2.0自渲染512x512
+    tableScreen: '7750b1c06701480b92b3e3b1c1a5a76e',//插屏广告
+    banner: '',//1080*171
+    nativeAd: '2fc6ab11d04944c7832a07351f5fa19e',//拆福袋原生//2.0自渲染1280x720
   },
   xiaomi: {
     nativeAd: '3ebda492da8090a8e28b3544df52da61', //原生
@@ -20,21 +20,33 @@ const adCodeData = {
     stimulateAd: '182b9c7d8701f5c50a0d5f1cb9fcf2b0',
     banner: 'f25c41f2e050f7bd045186ba095b6c8c',
     lotteryPageNativeAd: '3ebda492da8090a8e28b3544df52da61',
-    nativeAd_cfd:'y82ss9y9f7',
+    nativeAd: 'y82ss9y9f7',
   },
   OPPO: {
-    lotteryPageNativeAd: '1692402',//场景-转盘弹出层
-    nativeAd: '1692403', //原生//记账小管家-原生-在用-开红包
-    stimulateAd: '1692404',//幸运大转盘-激励视频
-    tableScreen:'1692405',//插屏广告
-    fiction1: '1692407', //原生小说广告页id
-    fiction2: '1692408', //原生小说广告页id
-    fiction3: '1692409', //原生小说广告页id
-    fiction4: '1692410', //原生小说广告页id
-    fiction5: '1692411', //原生512 2.0自渲染512x512
-    banner: '1692412',//1080*171
-    nativeAd_cfd:'1692413',//拆福袋原生//2.0自渲染1280x720
-
+    lotteryPageNativeAd: '1728887',//场景-转盘弹出层
+    nativeAd: '1728888', //原生//记账小管家-原生-在用-开红包
+    stimulateAd: '1728884',//幸运大转盘-激励视频
+    tableScreen: '1728892',//插屏广告
+    fiction1: '1728905', //原生小说广告页id
+    fiction2: '1728910', //原生小说广告页id
+    fiction3: '1728916', //原生小说广告页id
+    fiction4: '1728920', //原生小说广告页id
+    fiction5: '1728924', //原生512 2.0自渲染512x512
+    banner: '1728928',//1080*171
+    nativeAd: '1728931',//拆福袋原生//2.0自渲染1280x720
+  },
+  oppo: {
+    lotteryPageNativeAd: '1728887',//场景-转盘弹出层
+    nativeAd: '1728888', //原生//记账小管家-原生-在用-开红包
+    stimulateAd: '1728884',//幸运大转盘-激励视频
+    tableScreen: '1728892',//插屏广告
+    fiction1: '1728905', //原生小说广告页id
+    fiction2: '1728910', //原生小说广告页id
+    fiction3: '1728916', //原生小说广告页id
+    fiction4: '1728920', //原生小说广告页id
+    fiction5: '1728924', //原生512 2.0自渲染512x512
+    banner: '1728928',//1080*171
+    nativeAd: '1728931',//拆福袋原生//2.0自渲染1280x720
   },
   HUAWEI: {
     banner: 'w4brvyloy0',
@@ -42,12 +54,12 @@ const adCodeData = {
     tableScreen: 'l4ai02av3y',
     stimulateAd: 'o0rbevcepx',
     lotteryPageNativeAd: 'b9flx2el39',
-    nativeAd_cfd:'y82ss9y9f7',
+    nativeAd: 'y82ss9y9f7',
   },
   huawei: {
     banner: 'w4brvyloy0',
     nativeAd: 'y82ss9y9f7', //原生
-    nativeAd_cfd:'y82ss9y9f7',
+    nativeAd: 'y82ss9y9f7',
     tableScreen: 'l4ai02av3y',
     stimulateAd: 'o0rbevcepx',
     lotteryPageNativeAd: 'b9flx2el39',
