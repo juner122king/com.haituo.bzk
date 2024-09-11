@@ -315,7 +315,7 @@ export default {
   },
   getAdPageEntrance: function () {
     $apis.task.getAdPageEntrance().then((res) => {
-      console.log(res, '查看是否能展示入口');
+      // console.log(res, '查看是否能展示入口');
       this.showAdPageEntrance = res.data
     })
   }

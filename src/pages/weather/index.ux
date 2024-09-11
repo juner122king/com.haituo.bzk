@@ -79,7 +79,7 @@ export default {
        * 监听数据变化，你可以对数据处理后，设置值到data上
        */
   watchPropsChange(newV, oldV) {
-    console.log(`监听数据变化：`, newV, oldV)
+    // console.log(`监听数据变化：`, newV, oldV)
     if (newV === 1) {//点击到天气页
       this.refreshList()//刷新数据
     }

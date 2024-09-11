@@ -217,11 +217,11 @@ export default {
     $apis.task
       .getUserwealEntry()
       .then((res) => {
-        console.log(res, '获取福利入口信息')
+        // console.log(res, '获取福利入口信息')
         this.isShowMoviered = res.data.isOpenNovelRedPacket
       })
       .catch((err) => {
-        console.log(err, '获取福利入口信息')
+        // console.log(err, '获取福利入口信息')
       })
   },
 
@@ -261,7 +261,7 @@ export default {
     this.timer = null;
     this.timer = setTimeout(() => {
       this.showReminder = true;
-      console.log('怎么还没有触发', this);
+      // console.log('怎么还没有触发', this);
     }, 4000)
   },
   preloadAd() {

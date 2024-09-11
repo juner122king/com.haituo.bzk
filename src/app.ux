@@ -10,7 +10,7 @@ const $prompt = require("@system.prompt")
 const $ad = require('@service.ad')
 const $device = require('@system.device')
 const $shortcut = require('@system.shortcut')
-
+const $processData = require('./helper/processData').default
 
 /* @desc: 注入方法至全局 global,以便页面调用 */
 const hook2global = global.__proto__ || global
@@ -22,6 +22,8 @@ hook2global.$prompt = $prompt
 hook2global.$ad = $ad
 hook2global.$device = $device
 hook2global.$shortcut = $shortcut
+hook2global.$processData = $processData
+
 
 export default {
   onCreate() {
