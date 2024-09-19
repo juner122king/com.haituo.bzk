@@ -1,4 +1,4 @@
-
+<import name="transparency-mask" src="../../../components/transparency-mask/index.ux"></import>
 <import name="icon" src="apex-ui/components/icon/index"></import>
 <!-- 停留3秒显示弹窗 -->
 <template>
@@ -84,6 +84,11 @@
           </div>
         </div>
       </ad>
+      <transparency-mask
+        sportTitle="停留自弹窗"
+        onemit-hide-transparency="hideTransparency"
+        if="{{showTransparency}}"
+      ></transparency-mask>
     </div>
   </div>
 </template>
@@ -114,8 +119,15 @@ export default {
   props: {
     showTransparency: {
       default: false
+    },
+    sportTitle: {
+      default: '停留自弹窗'
     }
   },
+  hideTransparency() {
+    this.$emit('emitHideTransparency')
+  },
+
   onInit() {
     const branch = $ad.getProvider()
     this.adObj = adCodeData[branch]
@@ -140,11 +152,11 @@ export default {
           }
         },
         fail: (data, code) => {
-          this.hasAdList = false;
+
           this.$emit('emitClose', {
             data: 'showReminder'
           })
-          console.log(data, '返回广告失败延时弹窗');
+          console.log(data, '返回广告失败3');
           if (code === 205) {
             this.hasAdList = true;
             this.adList = data.adList[0]
@@ -166,13 +178,13 @@ export default {
       data: 'showReminder'
     })
     console.log('没有报错回调吗');
-
     if (this.debug) {
       prompt.showToast({
         message: `ad load error: errCode = ${errCode}, errMsg = ${errMsg}`
       });
     }
   },
+
   adShow(evt) {
     console.log('小说广告show: ', evt)
 
@@ -180,9 +192,13 @@ export default {
   },
   adClick() {
     console.log('没有点击回调吗');
+
+
     this.conversionUp('1')
+
     this.$emit('emitHideTransparency')
     //后台单个埋点 - 事件：广告点击
+
     $utils.buriedPointReport(this, 'click', this.adId)
   },
   conversionUp(clickCount) {
@@ -199,7 +215,8 @@ export default {
     console.log('没有关闭回调吗');
     this.hasAdList = false;
     this.$emit('emitClose', {
-      data: 'showReminder'
+      data: 'showReminder',
+      closeType: "close"
     })
   }
 }

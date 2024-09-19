@@ -3,6 +3,7 @@
 <import name="back-to-ads" src="./components/back-to-ads.ux"></import>
 <import name="icon" src="apex-ui/components/icon/index"></import>
 <import name="my-navbar" src="apex-ui/components/navbar/index"></import>
+
 <template>
   <div class="advertising-page">
     <my-navbar></my-navbar>
@@ -209,7 +210,7 @@ export default {
   },
   onMovieredClick() {
     $router.push({
-      uri: 'Page_cfd'
+      uri: 'pages/luckyBagOpen'
     })
   },
   //获取小说页面是否开启跳转红包页面悬浮组件
@@ -217,11 +218,11 @@ export default {
     $apis.task
       .getUserwealEntry()
       .then((res) => {
-        // console.log(res, '获取福利入口信息')
+        console.log(res, '获取福利入口信息')
         this.isShowMoviered = res.data.isOpenNovelRedPacket
       })
       .catch((err) => {
-        // console.log(err, '获取福利入口信息')
+        console.log(err, '获取福利入口信息')
       })
   },
 
@@ -232,9 +233,11 @@ export default {
       this.$app.$def.dataApp.actiParam = {
         ...e,
       }
-      $utils.buriedPointReport(this)
+      $utils.buriedPointReport(this, 'AppLaunch', '', '')
     }
     const branch = $ad.getProvider()
+
+    console.log('ac广告商', branch);
     this.adObj = adCodeData[branch]
     this.adId = adCodeData[branch].fiction1;
     this.preloadAd()
@@ -245,6 +248,8 @@ export default {
     this.delayedDisplay()
   },
   onShow(options) {
+    let actiParam = this.$app.$def.dataApp.actiParam;
+    this.$app.$sensors.pageShow({ channel: actiParam.channelValue });
   },
   onHide() {
     this.timer = null;
@@ -261,7 +266,7 @@ export default {
     this.timer = null;
     this.timer = setTimeout(() => {
       this.showReminder = true;
-      // console.log('怎么还没有触发', this);
+      console.log('怎么还没有触发', this);
     }, 4000)
   },
   preloadAd() {
@@ -405,18 +410,25 @@ export default {
   // 关闭
   heideReminder(e) {
     // this.showReminder = false;
-    this.addClickNum()
-    console.log(e);
+
+    console.log(e, '点击了关闭全透明层');
     const { detail = '' } = e;
     if (!detail) {
     } else {
       console.log('这是什么', detail.data);
       if (detail.data === 'showVackTisp') {
         this.showVackTisp = false
+        if (detail.closeType === 'close') {
+          this.addClickNum()
+        }
       } else if (detail.data === 'showReminder') {
-        this.showReminder = false
+        this.showReminder = false;
+        if (detail.closeType === 'close') {
+          this.addClickNum()
+        }
       }
     }
+
   },
   /**
    *关闭倒计时窗口

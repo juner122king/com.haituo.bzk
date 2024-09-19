@@ -169,7 +169,7 @@ export default {
   },
   // 打开广告
   openAd: $utils.throttle(function () {
-    this.$app.$def.globalData.isShwoAd = false
+    this.$app.$def.dataApp.isShwoAd = false
     if (this.showAdItem) {
       this.completionTask()
       return
@@ -181,7 +181,7 @@ export default {
 
   }),
   receiveAward: function () {
-    this.$app.$def.globalData.isShwoAd = false
+    this.$app.$def.dataApp.isShwoAd = false
     console.log('红包框');
     if (this.adTaskCompletions) {
       this.redPacket()
@@ -192,12 +192,12 @@ export default {
   bindFali: function () {
     console.log('无次数关闭');
     this.closePop()
-    this.$app.$def.globalData.isShwoAd = false
+    this.$app.$def.dataApp.isShwoAd = false
   },
   closePop: function (e) {
     this.tispBoxType = ''
     this.showAdItem = ''
-    this.$app.$def.globalData.isShwoAd = false
+    this.$app.$def.dataApp.isShwoAd = false
 
   },
   getCompleteCount() {
@@ -218,7 +218,7 @@ export default {
     //   message: "红包意外关闭稍后重试",
     //   gravity: "center"
     // })
-    this.$app.$def.globalData.isShwoAd = false
+    this.$app.$def.dataApp.isShwoAd = false
     if (e.detail && e.detail.data === 'error') {
       $utils.showToast('请稍后再试')
       return
@@ -241,7 +241,7 @@ export default {
     }, headers).then((res) => {
       console.log(res, '完成任务、');
       this.getUserInfo();     
-      this.$app.$def.globalData.isShwoAd = true
+      this.$app.$def.dataApp.isShwoAd = true
       if (res.data.awardAmount) {
         this.awardData = {
           awardAmount: res.data.awardAmount
@@ -261,7 +261,7 @@ export default {
             }
           ],
           success: function (data) {
-            that.$app.$def.globalData.isShwoAd = false
+            that.$app.$def.dataApp.isShwoAd = false
             console.log("handling callback", data);
           },
           cancel: function () {

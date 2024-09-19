@@ -131,54 +131,125 @@
  }
  
  /**
-  * 转化上传
-  * @param {*} that 所在this  小说广告页面的转化方法
-  */
- async function conversionUpload(that, ecpmParam) {
- 
-   let param = {
-     ...that.$app.$def.dataApp.actiParam,
-   }
-   param.type = judgingAd(that) //转换类型
-   if (Object.keys(param).length <= 0 || !param.type) {
-     //无值的情况直接删除
-     return
-   }
-   console.log('进入了回传上报')
-   if (param.type === 'jh') {
-     for (const key in param) {
-       param[key] = param[key].replace(/\/$/, '')
-     }
-     param = convertKeysToCamelCase(param)
-   }
-   console.log(param, '查看上传的参数')
- 
- 
-   let res = await $device.getOAID()
-   let oaid = res.data.oaid
-   console.info("OAID:  " + oaid)
-   console.log('竞价相关参数传到了？', ecpmParam);
- 
-   let adBrand = $ad.getProvider()
-   $apis.task
-     .postConvertUpload({
-       ...param,
-       ecpm: ecpmParam.ecpm,
-       adType: ecpmParam.adType,
-       adPositionId: ecpmParam.adPositionId,
-       clickCount: ecpmParam.clickCount,
-       pid: adBrand.toLowerCase(),
-       deviceId: param.oaid || '',
-       type: param.type,
-       oaid: oaid
-     })
-     .then((res) => {
-       console.log(res, '转换成功')
-     })
-     .catch((err) => {
-       console.log(err, '转换失败')
-     })
- }
+ * 转化上传
+ * @param {*} that 所在this  小说广告页面的转化方法
+ */
+  async function conversionUpload(that, ecpmParam, splashData = {}) {
+
+    try {
+  
+      let param = {}
+      if (ecpmParam.adType !== 'OPEN_SCREEN') {
+        param = {
+          ...that.$app.$def.dataApp.actiParam,
+        }
+        param.type = judgingAd(that) //转换类型
+      } else {
+        param = {
+          ...splashData,
+        }
+      }
+  
+      console.log(param, '查看回传上报参数')
+      if (Object.keys(param).length <= 0 || !param.type) {
+        //无值的情况直接删除
+        return
+      }
+      console.log('进入了回传上报')
+      if (param.type === 'jh') {
+        for (const key in param) {
+          param[key] = param[key].replace(/\/$/, '')
+        }
+        param = convertKeysToCamelCase(param)
+      }
+  
+  
+  
+      console.log(param, '查看上传的参数')
+  
+  
+      let res = await $device.getOAID()
+      let oaid = res.data.oaid
+      console.info("OAID:  " + oaid)
+      console.log('竞价相关参数传到了？', ecpmParam);
+  
+      const branch = $ad.getProvider().toLowerCase()
+      const deviceInfo = await $device.getInfo({})
+      const phoninfo = deviceInfo.data
+      let manufacturer = phoninfo.manufacturer.toLowerCase()
+  
+      if (manufacturer === 'oppo' || branch === 'oppo') {
+        //机型广告唯一值相同都替换
+        if (ecpmParam.adType !== 'OPEN_SCREEN') {
+          let oaid = that.$app.$def.dataApp.myOaid
+  
+          try {
+            console.log('进来了oppo')
+            let oaidData = ''
+            if (!oaid) {
+              oaidData = await $device.getOAID()
+              that.$app.$def.dataApp.myOaid = oaidData.data.oaid
+            } else {
+              console.log('有oaid就不用在触发了')
+            }
+            param.oaid = oaid || oaidData.data.oaid
+          } catch (error) {
+            console.log(error, '')
+          }
+          console.log(param.oaid, '查看oaid')
+        } else {
+          let oaidData = await $device.getOAID()
+          param.oaid = oaidData.data.oaid
+        }
+      }
+      console.log('普通上报参数==', param)
+      $apis.task
+        .postConvertUpload({
+          ...param,
+          ecpm: ecpmParam.ecpm,
+          adType: ecpmParam.adType,
+          adPositionId: ecpmParam.adPositionId,
+          clickCount: ecpmParam.clickCount,
+          pid: manufacturer || branch,
+          deviceId: param.oaid || '',
+          type: param.type,
+          oaid: oaid
+        })
+        .then((res) => {
+          console.log(res, '普通上报成功')
+        })
+        .catch((err) => {
+          console.log(err, '普通上报失败')
+        })
+  
+  
+      if (param.type === 'uc') {
+        console.log('UC上报参数==', param)
+        $apis.task
+          .postConvertUploadUC({
+            ...param,
+            ecpm: ecpmParam.ecpm,
+            adType: ecpmParam.adType,
+            adPositionId: ecpmParam.adPositionId,
+            clickCount: ecpmParam.clickCount,
+            pid: manufacturer || branch,
+            deviceId: param.oaid || '',
+            type: param.type,
+            oaid: oaid
+          })
+          .then((res) => {
+            console.log(res, 'UC上报成功')
+          })
+          .catch((err) => {
+            console.log(err, 'UC上报失败')
+          })
+      }
+  
+  
+    } catch (error) {
+      console.log('转换失败', error)
+    }
+  }
  
  /**
   * 插屏广告
@@ -369,10 +440,10 @@
    try {
      let type = name && data ? 'set' : changeType
      if (type === 'get') {
-       return name ? that.$app.$def.globalData[name] : that.$app.$def.globalData
+       return name ? that.$app.$def.dataApp[name] : that.$app.$def.dataApp
      } else if (type === 'set') {
-       that.$app.$def.globalData[name] = data
-       return that.$app.$def.globalData[name]
+       that.$app.$def.dataApp[name] = data
+       return that.$app.$def.dataApp[name]
      }
    } catch (error) { }
  }
@@ -381,7 +452,7 @@
   */
  function judgingAd(context) {
    let param = {
-     ...context.$app.$def.globalData.actiParam,
+     ...context.$app.$def.dataApp.actiParam,
    }
    let type = param.type || ''
    if (type) {
@@ -411,7 +482,7 @@
      backurl = '',
      corp_id = '',
      callback = '',
-   } = context.$app.$def.globalData.actiParam
+   } = context.$app.$def.dataApp.actiParam
    if (backurl) {
      return backurl
    } else if (callback) {
@@ -420,69 +491,110 @@
  }
  
  
- // 埋点上报
- async function buriedPointReport(these, event = 'AppLaunch', adId = '') {
-   try {
-     let checkPaem = {
-       ...these.$app.$def.dataApp.actiParam,
-     }
-     console.log(these.$app.$def.dataApp, 'these.$app.$def.dataApp-')
-     console.log(checkPaem, '查看是否有参数')
-     if (Object.keys(checkPaem).length <= 0) {
-       //无值的情况直接删除
-       return
-     }
- 
-     let token = await $storage.get({
-       key: 'AUTH_TOKEN_DATA',
-     })
-     token = JSON.parse(token.data)
-     console.log('查看这个token', token)
-     const that = this
-     let adBrand = $ad.getProvider()
-     let param = {
-       ...checkPaem,
-       cid: checkPaem.channelValue,
-       event: event === 'click' ? '$AdClick' : '$AppLaunch',
-       pid: adBrand.toLowerCase(),
-       appId: token.appId,
-       userId: token.userId,
-     }
-     let urlQuery = convertToQueryString(checkPaem)
-     $device.getInfo({
-       success: function (res) {
-         const phoninfo = res
-         let param2 = {
-           ...param,
-           properties: {
-             ...res,
-             manufacturer: phoninfo.manufacturer,
-             model: phoninfo.model,
-             os: phoninfo.osType,
-             product: phoninfo.product,
-             analysis: {
-               adId: adId,
-               title: adId,
-             },
-             urlQuery: urlQuery,
-           },
-         }
- 
-         console.log('查看上报参数', param2)
-         $apis.task
-           .postTrackCapture({ ...param2 })
-           .then((res) => {
-             console.log('埋点上报成功', res)
-           })
-           .catch((err) => {
-             console.log(err, '埋点上传失败')
-           })
-       },
-     })
-   } catch (error) {
-     console.log(error, '埋点上传错误')
-   }
- }
+// 埋点上报
+async function buriedPointReport(these, event = 'AppLaunch', adId = '', splashData = {}) {
+  try {
+    let checkPaem = {
+      channelValue: '',
+      oaid: '',
+      type: '',
+      ...splashData,
+    }
+    if (event !== 'Splash' && event !== 'SplashLaunch') {
+      //不是开屏正常逻辑
+      const isEnabled = these.$app.$def.dataApp.isEnabled
+      if (event === 'AppLaunch' && isEnabled) {
+        // console.log('取消启动上报', isEnabled)
+        return
+      } else {
+        // console.log('成功启动上报')
+        these.$app.$def.dataApp.isEnabled = true
+      }
+      checkPaem = {
+        channelValue: '',
+        ...these.$app.$def.dataApp.actiParam,
+      }
+    }
+
+    console.log(checkPaem, '查看是否有参数')
+    let token = await $storage.get({
+      key: 'AUTH_TOKEN_DATA',
+    })
+
+    try {
+      token = JSON.parse(token.data)
+    } catch (error) {
+      console.log('无token状态')
+      token = {
+        userId: 'null',
+        appId: '',
+      }
+    }
+    let adBrand = $ad.getProvider().toLowerCase()
+    let urlQuery = convertToQueryString(checkPaem)
+    const eventData = {
+      click: '$AdClick',
+      Splash: '$AdClick',
+      AppLaunch: '$AppLaunch',
+      SplashLaunch: '$AppLaunch',
+    }
+    $device.getInfo({
+      success: function (ret) {
+        let phoninfo = ret
+        let manufacturer = phoninfo.manufacturer.toLowerCase()
+        let param = {
+          ...checkPaem,
+          ...splashData,
+          event: eventData[event],
+          cid: checkPaem.channelValue,
+          pid: manufacturer || adBrand,
+          appId: token.appId || 'SC_0001',
+          userId: token.userId,
+          properties: {
+            ...phoninfo,
+            manufacturer: phoninfo.manufacturer,
+            model: phoninfo.model,
+            os: phoninfo.osType,
+            product: phoninfo.product,
+            analysis: {
+              adId: adId,
+              title: adId,
+            },
+            urlQuery: urlQuery,
+          },
+        }
+        console.log('查看埋点上报参数', param)
+        $apis.task
+          .postTrackCapture({ ...param })
+          .then((res) => {
+            console.log('上报成功', res)
+          })
+          .catch((err) => {
+            console.log(err, '上传失败')
+          })
+      },
+    })
+  } catch (error) {
+    console.log(error, '上传错误')
+    $apis.task
+      .postTrackCapture({
+        event: event === 'click' ? '$AdClick' : '$AppLaunch',
+        appId: 'SC_0001',
+        properties: {
+          analysis: {
+            adId: adId,
+            title: adId,
+          },
+        },
+      })
+      .then((res) => {
+        console.log('上报成功', res)
+      })
+      .catch((err) => {
+        console.log(err, '上传失败')
+      })
+  }
+}
  
  function convertToQueryString(objects) {
    // 初始化一个空字符串来存储结果
