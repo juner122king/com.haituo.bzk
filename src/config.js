@@ -96,6 +96,8 @@ const appConfig = {
 }
 
 export default {
+
+  appId: 'bzk',
   adCodeData,
   publicKey,
   privateKey,

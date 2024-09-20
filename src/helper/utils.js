@@ -130,81 +130,111 @@
    }
  }
  
- /**
+/**
  * 转化上传
  * @param {*} that 所在this  小说广告页面的转化方法
  */
-  async function conversionUpload(that, ecpmParam, splashData = {}) {
+ async function conversionUpload(that, ecpmParam, splashData = {}) {
 
-    try {
-  
-      let param = {}
+  try {
+
+    let param = {}
+    if (ecpmParam.adType !== 'OPEN_SCREEN') {
+      param = {
+        ...that.$app.$def.dataApp.actiParam,
+      }
+      param.type = judgingAd(that) //转换类型
+    } else {
+      param = {
+        ...splashData,
+      }
+    }
+
+    console.log(param, '查看回传上报参数')
+    if (Object.keys(param).length <= 0 || !param.type) {
+      //无值的情况直接删除
+      return
+    }
+    console.log('进入了回传上报')
+    if (param.type === 'jh') {
+      for (const key in param) {
+        param[key] = param[key].replace(/\/$/, '')
+      }
+      param = convertKeysToCamelCase(param)
+    }
+    console.log(param, '查看上传的参数')
+
+
+    let res = await $device.getOAID()
+    let oaid = res.data.oaid
+    console.info("OAID:  " + oaid)
+    console.log('竞价相关参数传到了？', ecpmParam);
+
+    const branch = $ad.getProvider().toLowerCase()
+    const deviceInfo = await $device.getInfo({})
+    const phoninfo = deviceInfo.data
+    let manufacturer = phoninfo.manufacturer.toLowerCase()
+
+    if (manufacturer === 'oppo' || branch === 'oppo') {
+      //机型广告唯一值相同都替换
       if (ecpmParam.adType !== 'OPEN_SCREEN') {
-        param = {
-          ...that.$app.$def.dataApp.actiParam,
-        }
-        param.type = judgingAd(that) //转换类型
-      } else {
-        param = {
-          ...splashData,
-        }
-      }
-  
-      console.log(param, '查看回传上报参数')
-      if (Object.keys(param).length <= 0 || !param.type) {
-        //无值的情况直接删除
-        return
-      }
-      console.log('进入了回传上报')
-      if (param.type === 'jh') {
-        for (const key in param) {
-          param[key] = param[key].replace(/\/$/, '')
-        }
-        param = convertKeysToCamelCase(param)
-      }
-  
-  
-  
-      console.log(param, '查看上传的参数')
-  
-  
-      let res = await $device.getOAID()
-      let oaid = res.data.oaid
-      console.info("OAID:  " + oaid)
-      console.log('竞价相关参数传到了？', ecpmParam);
-  
-      const branch = $ad.getProvider().toLowerCase()
-      const deviceInfo = await $device.getInfo({})
-      const phoninfo = deviceInfo.data
-      let manufacturer = phoninfo.manufacturer.toLowerCase()
-  
-      if (manufacturer === 'oppo' || branch === 'oppo') {
-        //机型广告唯一值相同都替换
-        if (ecpmParam.adType !== 'OPEN_SCREEN') {
-          let oaid = that.$app.$def.dataApp.myOaid
-  
-          try {
-            console.log('进来了oppo')
-            let oaidData = ''
-            if (!oaid) {
-              oaidData = await $device.getOAID()
-              that.$app.$def.dataApp.myOaid = oaidData.data.oaid
-            } else {
-              console.log('有oaid就不用在触发了')
-            }
-            param.oaid = oaid || oaidData.data.oaid
-          } catch (error) {
-            console.log(error, '')
+        let oaid = that.$app.$def.dataApp.myOaid
+
+        try {
+          console.log('进来了oppo')
+          let oaidData = ''
+          if (!oaid) {
+            oaidData = await $device.getOAID()
+            that.$app.$def.dataApp.myOaid = oaidData.data.oaid
+          } else {
+            console.log('有oaid就不用在触发了')
           }
-          console.log(param.oaid, '查看oaid')
-        } else {
-          let oaidData = await $device.getOAID()
-          param.oaid = oaidData.data.oaid
+          param.oaid = oaid || oaidData.data.oaid
+        } catch (error) {
+          console.log(error, '')
         }
+        console.log(param.oaid, '查看oaid')
+      } else {
+        let oaidData = await $device.getOAID()
+        param.oaid = oaidData.data.oaid
       }
-      console.log('普通上报参数==', param)
+    }
+    let buriedPointData = await $storage.get({
+      key: 'sensorsdata2015_quickapp',
+    })
+    try {
+      buriedPointData = JSON.parse(buriedPointData.data)
+    } catch (error) {
+      buriedPointData = {
+        distinct_id: '',
+      }
+    }
+
+
+    $apis.task
+      .postConvertUpload({
+        ...param,
+        ecpm: ecpmParam.ecpm,
+        adType: ecpmParam.adType,
+        adPositionId: ecpmParam.adPositionId,
+        clickCount: ecpmParam.clickCount,
+        pid: manufacturer || branch,
+        deviceId: param.oaid || '',
+        type: param.type,
+        oaid: oaid,
+        distinctId: buriedPointData.distinct_id
+      })
+      .then((res) => {
+        console.log(res, '普通上报成功')
+      })
+      .catch((err) => {
+        console.log(err, '普通上报失败')
+      })
+
+    if (param.type === 'uc') {
+      console.log('UC上报参数==', param)
       $apis.task
-        .postConvertUpload({
+        .postConvertUploadUC({
           ...param,
           ecpm: ecpmParam.ecpm,
           adType: ecpmParam.adType,
@@ -213,43 +243,20 @@
           pid: manufacturer || branch,
           deviceId: param.oaid || '',
           type: param.type,
-          oaid: oaid
+          oaid: oaid,
+          distinctId: buriedPointData.distinct_id
         })
         .then((res) => {
-          console.log(res, '普通上报成功')
+          console.log(res, 'UC上报成功')
         })
         .catch((err) => {
-          console.log(err, '普通上报失败')
+          console.log(err, 'UC上报失败')
         })
-  
-  
-      if (param.type === 'uc') {
-        console.log('UC上报参数==', param)
-        $apis.task
-          .postConvertUploadUC({
-            ...param,
-            ecpm: ecpmParam.ecpm,
-            adType: ecpmParam.adType,
-            adPositionId: ecpmParam.adPositionId,
-            clickCount: ecpmParam.clickCount,
-            pid: manufacturer || branch,
-            deviceId: param.oaid || '',
-            type: param.type,
-            oaid: oaid
-          })
-          .then((res) => {
-            console.log(res, 'UC上报成功')
-          })
-          .catch((err) => {
-            console.log(err, 'UC上报失败')
-          })
-      }
-  
-  
-    } catch (error) {
-      console.log('转换失败', error)
     }
+  } catch (error) {
+    console.log('转换失败', error)
   }
+}
  
  /**
   * 插屏广告
@@ -520,14 +527,21 @@ async function buriedPointReport(these, event = 'AppLaunch', adId = '', splashDa
     let token = await $storage.get({
       key: 'AUTH_TOKEN_DATA',
     })
+    let buriedPointData = await $storage.get({
+      key: 'sensorsdata2015_quickapp',
+    })
 
     try {
       token = JSON.parse(token.data)
+      buriedPointData = JSON.parse(buriedPointData.data)
     } catch (error) {
       console.log('无token状态')
       token = {
         userId: 'null',
         appId: '',
+      }
+      buriedPointData = {
+        distinct_id: '',
       }
     }
     let adBrand = $ad.getProvider().toLowerCase()
@@ -548,7 +562,7 @@ async function buriedPointReport(these, event = 'AppLaunch', adId = '', splashDa
           event: eventData[event],
           cid: checkPaem.channelValue,
           pid: manufacturer || adBrand,
-          appId: token.appId || 'SC_0001',
+          appId: token.appId || 'bzk',
           userId: token.userId,
           properties: {
             ...phoninfo,
@@ -561,6 +575,7 @@ async function buriedPointReport(these, event = 'AppLaunch', adId = '', splashDa
               title: adId,
             },
             urlQuery: urlQuery,
+            distinct_id: buriedPointData.distinct_id,
           },
         }
         console.log('查看埋点上报参数', param)
@@ -579,7 +594,7 @@ async function buriedPointReport(these, event = 'AppLaunch', adId = '', splashDa
     $apis.task
       .postTrackCapture({
         event: event === 'click' ? '$AdClick' : '$AppLaunch',
-        appId: 'SC_0001',
+        appId: 'bzk',
         properties: {
           analysis: {
             adId: adId,

@@ -489,7 +489,7 @@ export default {
     let data = {
       adType: 'NATIVE',
       adId: config.adCodeData[this.brand].nativeAd,
-      channel: 'mxpc',
+      channel: 'bzk',
       countMax: 12,
     }
     let headers = {
@@ -689,7 +689,7 @@ export default {
     let data = {
       adType: 'REWARDED_VIDEO',
       adId: config.adCodeData[this.brand].stimulateAd,
-      channel: 'mxpc',
+      channel: 'bzk',
       countMax: 2,
       brand: this.brand,
       completeType: 'WATCH_VIDEO'
