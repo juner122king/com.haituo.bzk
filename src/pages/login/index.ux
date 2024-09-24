@@ -1,7 +1,7 @@
 <template>
   <div class="login-page">
     <div class="login-title">
-      <text class="heading">欢迎来到喵星测评</text>
+      <text class="heading">欢迎来到壁纸控</text>
       <text class="subhead">使用手机号快捷登录，享受更多专属权益</text>
     </div>
     <div class="phone-num">

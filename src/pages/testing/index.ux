@@ -1,3 +1,7 @@
+<import
+  name="gold-coin-pendant"
+  src="../../components/goldCoinPendant/index.ux"
+></import>
 <import name="image-list" src="./image-list.ux"></import>
 <template>
   <div class="page">
@@ -61,9 +65,9 @@
         </div>
       </div>
     </div>  
+    <gold-coin-pendant if="{{!ishowTisp}}"></gold-coin-pendant>
   </div>
 </template>
-
 <script>
 // import { category } from '../../helper/category.js'
 export default {

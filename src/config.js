@@ -12,6 +12,10 @@ const adCodeData = {
     tableScreen: '7750b1c06701480b92b3e3b1c1a5a76e',//插屏广告
     banner: '',//1080*171
     nativeAd_cfd: '2fc6ab11d04944c7832a07351f5fa19e',//拆福袋原生//2.0自渲染1280x720
+    taku: {
+      stimulateAd: 'b66d919d432f62',
+      tableScreenAd: 'b66d919d432f62'
+    },
   },
   xiaomi: {
     lotteryPageNativeAd: '241235f9d5ef865e2b8661e5f51faeb2',//场景-转盘弹出层
@@ -25,6 +29,10 @@ const adCodeData = {
     tableScreen: '3870bb46c9f6ef9bfdc918a4429c893e',//插屏广告
     banner: '',//1080*171
     nativeAd_cfd: '00c456c34d1efed9cac4f40a4b2cb294',//拆福袋原生//2.0自渲染1280x720
+    taku: {
+      stimulateAd: 'b66dad13196b75',
+      tableScreenAd: 'b66dad13196b75'
+    },
   },
   OPPO: {
     lotteryPageNativeAd: '1728887',//场景-转盘弹出层
@@ -38,6 +46,10 @@ const adCodeData = {
     fiction5: '1728924', //原生512 2.0自渲染512x512
     banner: '1728928',//1080*171
     nativeAd_cfd: '1728931',//拆福袋原生//2.0自渲染1280x720
+    taku: {
+      stimulateAd: 'b66dacc756ede7',
+      tableScreenAd: 'b66dacc756ede7'
+    },
   },
   oppo: {
     lotteryPageNativeAd: '1728887',//场景-转盘弹出层
@@ -51,6 +63,10 @@ const adCodeData = {
     fiction5: '1728924', //原生512 2.0自渲染512x512
     banner: '1728928',//1080*171
     nativeAd_cfd: '1728931',//拆福袋原生//2.0自渲染1280x720
+    taku: {
+      stimulateAd: 'b66dacc756ede7',
+      tableScreenAd: 'b66dacc756ede7'
+    },
   },
   HUAWEI: {
     banner: 'w4brvyloy0',
