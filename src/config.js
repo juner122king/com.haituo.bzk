@@ -16,6 +16,7 @@ const adCodeData = {
       stimulateAd: 'b66d919d432f62',
       tableScreenAd: 'b66d919d432f62'
     },
+    openScreen: ''
   },
   xiaomi: {
     lotteryPageNativeAd: '241235f9d5ef865e2b8661e5f51faeb2',//场景-转盘弹出层
@@ -33,6 +34,8 @@ const adCodeData = {
       stimulateAd: 'b66dad13196b75',
       tableScreenAd: 'b66dad13196b75'
     },
+
+    openScreen: ''
   },
   OPPO: {
     lotteryPageNativeAd: '1728887',//场景-转盘弹出层
@@ -50,6 +53,7 @@ const adCodeData = {
       stimulateAd: 'b66dacc756ede7',
       tableScreenAd: 'b66dacc756ede7'
     },
+    openScreen: '1728893'
   },
   oppo: {
     lotteryPageNativeAd: '1728887',//场景-转盘弹出层
@@ -67,6 +71,7 @@ const adCodeData = {
       stimulateAd: 'b66dacc756ede7',
       tableScreenAd: 'b66dacc756ede7'
     },
+    openScreen: '1728893'
   },
   HUAWEI: {
     banner: 'w4brvyloy0',

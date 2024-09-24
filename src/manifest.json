@@ -1,15 +1,12 @@
 {
   "package": "com.haituo.bzk",
   "name": "壁纸控",
-  "versionName": "1.1.0",
-  "versionCode": 110,
+  "versionName": "1.1.1",
+  "versionCode": 111,
   "minPlatformVersion": 1100,
   "icon": "/Common/logo.png",
   "designWidth": 750,
   "features": [
-    {
-      "name": "system.request"
-    },
     {
       "name": "system.prompt"
     },
@@ -48,6 +45,9 @@
     },
     {
       "name": "system.image"
+    },
+    {
+      "name": "system.request"
     }
   ],
   "permissions": [

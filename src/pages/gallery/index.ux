@@ -50,7 +50,7 @@ export default {
       hading: "温馨提示",
       subheading: "即将使用存储，用于存储图片或视频",
       iconType: "hint",
-      cloneBtn: "",
+      cloneBtn: "取消",
       successBtn: "我知道了"
     }
   },
@@ -157,6 +157,9 @@ export default {
       }
     })
   },
+  cloneDialog() {
+    this.isShowDialog = false
+  }
 
 
 }
