@@ -207,7 +207,7 @@ export default {
             },
             'error'
           )
-          console.log(data, code, '返回广告失败1')
+          console.log(data, code, '返回广告失败13333')
           this.hasAdList = true
           if (code === 205) {
             this.hasAdList = true

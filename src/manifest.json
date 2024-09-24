@@ -1,8 +1,8 @@
 {
   "package": "com.haituo.bzk",
   "name": "壁纸控",
-  "versionName": "1.0.7",
-  "versionCode": 107,
+  "versionName": "1.1.0",
+  "versionCode": 110,
   "minPlatformVersion": 1100,
   "icon": "/Common/logo.png",
   "designWidth": 750,
@@ -48,9 +48,6 @@
     },
     {
       "name": "system.image"
-    },
-    {
-      "name": "system.media"
     }
   ],
   "permissions": [
@@ -139,6 +136,7 @@
   "display": {
     "titleBarBackgroundColor": "#f2f2f2",
     "titleBarTextColor": "#414141",
+    "themeMode": 0,
     "pages": {
       "pages/luckyBagOpen": {
         "titleBar": false,

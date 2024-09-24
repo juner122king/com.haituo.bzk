@@ -21,6 +21,7 @@ module.exports = {
     const $processData = require('./helper/processData').default
     const $config = require('./config.js').default
     const $adFun = require('./helper/adFun').default
+    const $image = require('@system.image')
     /* @desc: 注入方法至全局 global,以便页面调用 */
     const hook2global = global.__proto__ || global
     hook2global.$utils = $utils
@@ -34,6 +35,7 @@ module.exports = {
     hook2global.$processData = $processData
     hook2global.$config = $config
     hook2global.$adFun = $adFun
+    hook2global.$image = $image
 
     try {
       this.instance = new TOPON_AD_SDK({

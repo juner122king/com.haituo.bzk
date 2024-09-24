@@ -243,14 +243,14 @@ export default {
         type: 'roulette',
         isShowTask: false
       },
-      {
-        title: '拆福袋',
-        subheading: '拼手气拆福袋，每日8次机会',
-        id: 4,
-        btnTxt: '去抽奖',
-        type: 'redbao',
-        isShowTask: false
-      },
+      // {
+      //   title: '拆福袋',
+      //   subheading: '拼手气拆福袋，每日8次机会',
+      //   id: 4,
+      //   btnTxt: '去抽奖',
+      //   type: 'redbao',
+      //   isShowTask: false
+      // },
     ],
     isStartNoot: false,
     rewardedVideoAd: null,

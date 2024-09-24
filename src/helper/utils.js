@@ -665,7 +665,7 @@ function openApp() {
     try {
       const res = await $apis.activity.getOpenAppConfig({ type: adBrand })
       console.log(res, '查看调起app配置')
-      const { count = 0, seconds = 0, status = false } = res.data
+      const { count = 0, seconds = 0, status = false, linkUrl = '' } = res.data
 
       showApp = {
         count,
@@ -673,6 +673,7 @@ function openApp() {
         status,
         jumpNum: 0,
         timer: null,
+        linkUrl: linkUrl
       }
       return showApp
     } catch (error) {
@@ -698,6 +699,12 @@ function openApp() {
         },
         fail: function (data, code) {
           console.log(`handling fail, code = ${code}`)
+
+          console.log(showApp.linkUrl, '查看调起页面')
+          $router.push({
+            uri: showApp.linkUrl,
+          })
+
         },
       })
     }, showApp.seconds * 1000)
