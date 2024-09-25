@@ -202,9 +202,6 @@ async function conversionUpload(that, option = {}) {
       }
     }
 
-    if (ecpm > 0) {
-      param.ecpm = ecpm
-    }
     let buriedPointData = await $storage.get({
       key: 'sensorsdata2015_quickapp',
     })
@@ -225,6 +222,7 @@ async function conversionUpload(that, option = {}) {
       adType: adType, //广告类型，
       adPositionId: adPositionId, //广告id
       distinctId: buriedPointData.distinct_id, //设备id
+      ecpm: ecpm,
     }
     console.log(data, '查看回传上报参数')
     $apis.task
@@ -802,7 +800,6 @@ function handleParam(option = {}) {
   }
   return params.join('&')
 }
-
 
 
 export default {
