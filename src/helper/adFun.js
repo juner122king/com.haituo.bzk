@@ -25,6 +25,9 @@ function openScreen(these) {
         these.sensors.track('$WebShow', {
           analysis: {
             title: `开屏广告-广告曝光失败-${config.adCodeData.oppo.openScreen}`,
+            channel: splashData.channelValue,
+            formId: config.adCodeData.oppo.openScreen,
+            ...splashData,
           },
         })
         return
