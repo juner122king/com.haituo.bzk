@@ -6,8 +6,10 @@ import $router from '@system.router'
 const config = require('../config').default
 const getUserId = async () => {
   let userId = await $device.getUserId()
+
   return userId.data.userId
 }
+
 const quit = () => {
   $prompt.showDialog({
     title: '警告',
@@ -34,6 +36,14 @@ const getTokenData = () => {
     let branch = $ad.getProvider().toLowerCase()
     const example = require('./apis/example.js').default
     const deviceNum = await getUserId()
+    // console.log('查看这个channel值', actiParam)
+    // console.log('***************', deviceNum)
+    // let cid =
+    //   (
+    //     await $storage.get({
+    //       key: 'cid',
+    //     })
+    //   ).data || ''
     example
       .toLogin({
         loginType: 'DEVICE',
@@ -46,7 +56,7 @@ const getTokenData = () => {
         resolve(data)
       })
       .catch((err) => {
-        console.log(err, '查看这个报错了')
+        console.log(err, '获取token报错')
         try {
           if (JSON.parse(err).code === '310001') {
             quit()
@@ -87,7 +97,6 @@ const request = (options) => {
       headers = {},
       isforeignAddress = false,
     } = options
-
     const authData =
       (await $storage.get({
         key: 'AUTH_TOKEN_DATA',
@@ -147,9 +156,11 @@ const request = (options) => {
         return retry
       }
     }
-
     headers.Authorization = accessToken || ''
-    if (url.includes('/qa/track/capture')) {
+    if (
+      url.includes('/qa/track/capture') ||
+      url.startsWith('/qa/mini/basic/ad/convert/upload')
+    ) {
       options.data.userId = userId
       try {
         if (!options.data.distinct_id) {

@@ -1,8 +1,8 @@
 {
   "package": "com.haituo.bzk",
   "name": "壁纸控",
-  "versionName": "1.1.3",
-  "versionCode": 113,
+  "versionName": "1.1.4",
+  "versionCode": 114,
   "minPlatformVersion": 1100,
   "icon": "/Common/logo.png",
   "designWidth": 750,
@@ -125,6 +125,9 @@
       "activity/mysteryPopups": {
         "component": "index"
       },
+      "activity/mysteryPopups_taku": {
+        "component": "index"
+      },
       "activity/randomGiftPack": {
         "component": "index"
       },
@@ -207,6 +210,13 @@
         "titleBarText": ""
       },
       "activity/mysteryPopups": {
+        "titleBar": false,
+        "menu": false,
+        "statusBarImmersive": true,
+        "statusBarBackgroundOpacity": 0,
+        "titleBarBackgroundOpacity": 0
+      },
+      "activity/mysteryPopups_taku": {
         "titleBar": false,
         "menu": false,
         "statusBarImmersive": true,
